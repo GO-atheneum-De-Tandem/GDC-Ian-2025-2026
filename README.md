@@ -5,7 +5,7 @@ Onderzoek naar welke beveiligingsproblemen er kunnen voorkomen bij REST-API's en
 Welke beveiligingsproblemen komen voor bij web- en REST-API’s en hun authenticatiesystemen, en hoe kunnen deze problemen worden voorkomen?
 
 ## Hypothese
-Bij web- en REST-API’s komen beveiligingsproblemen zoals Cross-Site Scripting, Lack of Rate Limiting en Excessive Data Exposure voor. Hoe deze problemen voorkomen kunnen worden zal duidelijk worden na verder onderzoek.
+Bij web- en REST-API’s komen beveiligingsproblemen zoals Cross-Site Scripting (XSS), Cross-Site Request Forgery (CSRF) en Trusting (Manipulated) client-side data voor. Hoe deze problemen voorkomen kunnen worden zal duidelijk worden na verder onderzoek.
 
 ## Welke Security Problemen zullen onderzocht worden
 ### Officieel voor GDC
