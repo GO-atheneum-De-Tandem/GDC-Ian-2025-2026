@@ -14,23 +14,19 @@ Bij web- en REST-API’s komen beveiligingsproblemen zoals Cross-Site Scripting,
 
 - XSS - Cross-Site Scripting
 - CSRF - Cross-Site Request Forgery
-- 
+- Trusting (Manipulated) client-side data
+    - Injection Flaws (SQL Injection)
+    - IDOR - Insecure Direct Object Reference
 
 ---
 ### Extra Onderzoek
 
 > [!NOTE] 
-> Extra onderzoek zal uitgevoerd worden naar andere, hieronder vermelde, security problemen voor eigen doeleinden en het vak Informaticawetenschappen.
-> Deze onderwerpen komen niet aan bod in de GDC (paper of presentatie). Documentatie is te vinden onder `/docs/Extra/`
+> Extra onderzoek zal uitgevoerd worden naar andere, hieronder vermelde, security problemen voor eigen doeleinden en het vak Informaticawetenschappen. Deze onderwerpen komen niet aan bod in de GDC (paper of presentatie). Documentatie is te vinden onder `/docs/Extra/`
 - Lack of Rate Limiting
 - Misconfigured CORS - Cross-Origin Resource Sharing
 - Insufficient Logging & Monitoring (malicious activities go unnoticed)
-
-### Nog uit kiezen
-- Injection Flaws
-- IDOR - Insecure Direct Object Reference (Manipuleren input values)
 - Excessive Data Exposure
-- Trusting (Manipulated) client-side data
 
 ## Gebruikte Software
 - [PostreSQL](https://www.postgresql.org/) - SQL Database
