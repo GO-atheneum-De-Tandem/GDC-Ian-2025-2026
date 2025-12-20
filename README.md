@@ -27,6 +27,7 @@ Bij web- en REST-API’s komen beveiligingsproblemen zoals Cross-Site Scripting 
 - Misconfigured CORS - Cross-Origin Resource Sharing
 - Insufficient Logging & Monitoring (malicious activities go unnoticed)
 - Excessive Data Exposure
+- BOLA - Broken Object Level Authorization
 
 ## Gebruikte Software
 - [PostreSQL](https://www.postgresql.org/) - SQL Database
