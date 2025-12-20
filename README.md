@@ -34,4 +34,5 @@ Bij web- en REST-API’s komen beveiligingsproblemen zoals Cross-Site Scripting 
 - [PyTest](https://docs.pytest.org/en/stable/) - Python Code Testing
 - [PyLint](https://pypi.org/project/pylint/) - Python Code Checking
 - [Postman](https://www.postman.com/) - API Testing & Collaboration Software
+- [HTTP Toolkit](https://httptoolkit.com/) - API Intercept Software
 - [Burp Suite Community Edition](https://portswigger.net/burp/communitydownload) - Pen Testing Software for HTTP Applications
