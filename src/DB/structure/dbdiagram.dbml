@@ -1,0 +1,116 @@
+Table access.users {
+  id int [pk, increment]
+
+  username varchar(100) [not null, unique]
+
+  email varchar(350) [not null, unique]
+
+  password_hash text [not null]
+
+  role int [default: 9, not null]
+
+  created_at timestamptz [default: `now()`, not null]
+
+  updated_at timestamptz [default: `now()`, not null]
+
+  last_login_at timestamptz
+
+  Indexes {
+    (username)
+    (email)
+  }
+}
+
+Table content.posts {
+  id int [pk, increment]
+
+  author_id int [not null, ref: > access.users.id]
+
+  title varchar(255) [not null]
+
+  content text [not null]
+
+  content_mime varchar(50) [default: 'text/html']
+
+  created_at timestamptz [default: `now()`, not null]
+
+  updated_at timestamptz [default: `now()`, not null]
+
+  Indexes {
+    (author_id)
+    (created_at)
+  }
+}
+
+Table content.comments {
+  id int [pk, increment]
+
+  post_id int [not null, ref: > content.posts.id]
+
+  author_id int [not null, ref: > access.users.id]
+
+  content text [not null]
+
+  created_at timestamptz [default: `now()`, not null]
+
+  updated_at timestamptz [default: `now()`, not null]
+
+  Indexes {
+    (post_id, created_at)
+    (author_id, created_at)
+  }
+}
+
+Table access.refresh_tokens {
+  id int [pk, increment]
+
+  user_id int [not null, ref: > access.users.id]
+
+  token text [not null, unique]
+
+  token_type varchar(50) [default: 'long', not null] // 'short' | 'long' (remember-me variants)
+
+  created_at timestamptz [default: `now()`, not null]
+
+  expires_at timestamptz [default: `CURRENT_TIMESTAMP + INTERVAL '3 days'`, not null]
+
+  revoked boolean [default: false, not null]
+
+  ip inet
+
+  user_agent text
+
+  last_used_at timestamptz
+
+  Indexes {
+    (user_id, created_at)
+    (token)
+    (expires_at)
+  }
+}
+
+Table access.password_resets {
+  id int [pk, increment]
+
+  user_id int [not null, ref: > access.users.id]
+
+  reset_token text [not null, unique]
+
+  created_at timestamptz [default: `now()`, not null]
+
+  expires_at timestamptz [not null, default: `CURRENT_TIMESTAMP + INTERVAL '1 hour'`]
+
+  used boolean [default: false, not null]
+
+  used_at timestamptz
+
+  ip inet
+
+  user_agent text
+
+  Indexes {
+    (user_id, created_at)
+    (reset_token)
+    (expires_at)
+  }
+}
