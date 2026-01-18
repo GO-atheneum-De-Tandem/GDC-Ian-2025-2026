@@ -30,10 +30,22 @@ Bij web- en REST-API’s komen beveiligingsproblemen zoals Cross-Site Scripting 
 - BOLA - Broken Object Level Authorization
 
 ## Gebruikte Software
+### Development Software
+- [Docker](https://www.docker.com/) - Containerization Software
+- [Portainer](https://www.portainer.io/) - Docker Management Software
+- [WireGuard](https://www.wireguard.com/) - VPN Software
 - [PostreSQL](https://www.postgresql.org/) - SQL Database
+
+### Development Libraries
+- [Python](https://www.python.org/) - Programming Language
 - [FastAPI](https://fastapi.tiangolo.com/) - Python API Framework
 - [PyTest](https://docs.pytest.org/en/stable/) - Python Code Testing
 - [PyLint](https://pypi.org/project/pylint/) - Python Code Checking
+
+### Software Tools
+- [Visual Studio Code](https://code.visualstudio.com/) - Code Editor
+- [HeidSQL](https://heidisql.com/) - SQL Client Software
+- [pgAdmin](https://www.pgadmin.org/) - PostgreSQL Management Software
 - [Postman](https://www.postman.com/) - API Testing & Collaboration Software
 - [HTTP Toolkit](https://httptoolkit.com/) - API Intercept Software
 - [Burp Suite Community Edition](https://portswigger.net/burp/communitydownload) - Pen Testing Software for HTTP Applications
