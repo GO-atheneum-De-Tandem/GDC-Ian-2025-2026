@@ -4,6 +4,6 @@ app = FastAPI()
 @app.get("/")
 def first_example():
   '''
-     FG Example First Fast API Example 
+  FG Example First Fast API Example 
   '''
-    return {"GFG Example": "FastAPI"}
+  return {"GFG Example": "FastAPI"}
