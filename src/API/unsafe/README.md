@@ -1,0 +1,3 @@
+# Source Code Unsafe API
+Hier in deze folder kan je alle source code van de onveilige API terug vinden. Deze API zal dezelfde voorbeelden als de veilige API bevatten maar er zullen beveiligingsproblemen in de code zitten waardoor het systeem misbruikt kan worden.  
+Vervolgens kunnen de verschillen tussen de veilige en onveilige API aangetoond worden om op die manier duidelijk te maken waar er op gelet moet worden om een veilige API te kunnen maken.
