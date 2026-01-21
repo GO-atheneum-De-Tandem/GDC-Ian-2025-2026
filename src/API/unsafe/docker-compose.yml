@@ -9,6 +9,8 @@ services:
     container_name: gdc-ian-unsafe-api
     ports:
       - "80:80"
+    env_file:
+      - .env
     restart: unless-stopped
 
     # Voor dev: uncomment volumes zodat lokale code direct gebruikt wordt:
