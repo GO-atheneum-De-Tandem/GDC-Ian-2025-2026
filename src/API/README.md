@@ -23,6 +23,16 @@ Je zult de credentials later moeten invullen in de environment variables van de 
    CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80", "--http", "httptools", "--workers", "4"]
    ```
 
+8. Maak een `.env` bestand aan in dezelfde directory als het Dockerfile & compose file.  
+Vul hierin de volgende environment variables in met de juiste waarden:
+   ```env
+   DB_HOST=your_database_host
+   DB_PORT=your_database_port
+   DB_NAME=your_database_name
+   DB_USER=your_database_user
+   DB_PASSWORD=your_database_password
+   ```
+
 8. Voer het volgende commando uit om de Docker image te bouwen & Docker container te bouwen:  
 Zorg ervoor dat je in de directory bent waar het Dockerfile & compose file zich bevindt.
    ```bash
