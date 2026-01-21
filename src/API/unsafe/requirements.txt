@@ -1,4 +1,6 @@
 fastapi[standard]
 pydantic
+pydantic-settings
 pytest
 pylint
+asyncpg

@@ -1,4 +1,4 @@
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     DB_HOST: str
@@ -8,7 +8,8 @@ class Settings(BaseSettings):
     DB_NAME: str
 
     class Config:
-        env_file = ".env"
+        #env_file = ".env" #docker setting
+        env_file = "../.env" #local setting
 
 settings = Settings()
 # gebruik settings.DB_HOST etc.
