@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  gdc-ian-safe-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: gdc-ian-safe-api:latest
+    container_name: gdc-ian-safe-api
+    ports:
+      - "80:80"
+    restart: unless-stopped
+
+    # Voor dev: uncomment volumes zodat lokale code direct gebruikt wordt:
+    # volumes:
+    #   - ./app:/code/app
