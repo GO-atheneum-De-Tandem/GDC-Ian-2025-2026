@@ -23,7 +23,7 @@ Je zult de credentials later moeten invullen in de environment variables van de 
    CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80", "--http", "httptools", "--workers", "4"]
    ```
 
-8. Maak een `.env` bestand aan in dezelfde directory als het Dockerfile & compose file.  
+8. Maak een `data.env` bestand aan in dezelfde directory als het Dockerfile & compose file.  
 Vul hierin de volgende environment variables in met de juiste waarden:
    ```env
    DB_HOST=your_database_host
