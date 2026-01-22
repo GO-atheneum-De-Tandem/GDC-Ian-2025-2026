@@ -1,15 +1,12 @@
 from pydantic_settings import BaseSettings
+from os import getenv
 
 class Settings(BaseSettings):
-    DB_HOST: str
-    DB_PORT: int
-    DB_USER: str
-    DB_PASS: str
-    DB_NAME: str
-
-    class Config:
-        env_file = ".env" #docker setting
-        #env_file = "../.env" #local setting
-
+    DB_HOST: str = getenv("DB_HOST", "localhost")
+    DB_PORT: int = int(getenv("DB_PORT", 5432))
+    DB_USER: str = getenv("DB_USER", "user")
+    DB_PASS: str = getenv("DB_PASS", "password")
+    DB_NAME: str = getenv("DB_NAME", "database")
+    
 settings = Settings()
 # gebruik settings.DB_HOST etc.
