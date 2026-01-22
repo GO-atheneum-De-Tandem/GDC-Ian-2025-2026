@@ -1,7 +1,7 @@
 1. Maak je settings in Python met Pydantic BaseSettings (leest automatisch environment of .env):
 
 ```python
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     DB_HOST: str
