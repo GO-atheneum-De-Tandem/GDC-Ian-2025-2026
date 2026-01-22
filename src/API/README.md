@@ -17,13 +17,29 @@ Je zult de credentials later moeten invullen in de environment variables van de 
 5. Navigeer in de terminal naar de directory waar de bestanden zijn geüpload. Zorg dat je in deze directory blijft voor de volgende stappen.
 6. Voer eventuele aanpassingen uit in het Dockerfile & compose file indien nodig.
 
-7. Er worden geen aantal workers meegestuurd in de Dockerfile, je kan deze zelf toevoegen afhankelijk van je server capaciteit.  
+7. Draait je postgreSQL database in een docker container lokaal of op dezelfde host als de API?  
+Zorg ervoor dat de FastAPI Docker container in hetzelfde netwerk zit als de postgreSQL database container.  
+Je kan hiervoor de volgende network regels toevoegen aan het compose file:
+   ```yaml
+   services:
+      gdc-ian-safe-api:
+         ... # overige regels
+         ... # overige regels
+         networks:
+         - [NETWORK_NAME] # Vervang [NETWORK_NAME] met de naam van het netwerk van de database container
+
+   networks:
+     [NETWORK_NAME]: # Vervang [NETWORK_NAME] met de naam van het netwerk van de database container
+       external: true
+   ```
+
+8. Er worden geen aantal workers meegestuurd in de Dockerfile, je kan deze zelf toevoegen afhankelijk van je server capaciteit.  
    Pas de `CMD` regel aan in het Dockerfile, bijvoorbeeld:
    ```Dockerfile
    CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80", "--http", "httptools", "--workers", "4"]
    ```
 
-8. Maak een `data.env` bestand aan in dezelfde directory als het Dockerfile & compose file.  
+9. Maak een `data.env` bestand aan in dezelfde directory als het Dockerfile & compose file.  
 Vul hierin de volgende environment variables in met de juiste waarden:
    ```env
    DB_HOST=your_database_host
@@ -33,13 +49,13 @@ Vul hierin de volgende environment variables in met de juiste waarden:
    DB_PASSWORD=your_database_password
    ```
 
-8. Voer het volgende commando uit om de Docker image te bouwen & Docker container te bouwen:  
+10. Voer het volgende commando uit om de Docker image te bouwen & Docker container te bouwen:  
 Zorg ervoor dat je in de directory bent waar het Dockerfile & compose file zich bevindt.
    ```bash
    docker compose up --build -d
    ```
 
-9. Voor het herbouwen van de container na aanpassingen, voer je het volgende commando uit:
+11. Voor het herbouwen van de container na aanpassingen, voer je het volgende commando uit:
    ```bash
    docker compose build
    ```
