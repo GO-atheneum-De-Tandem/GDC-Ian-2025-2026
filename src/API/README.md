@@ -49,6 +49,7 @@ Vul hierin de volgende environment variables in met de juiste waarden of pas aan
    DB_PASSWORD=your_database_password
    DB_POOL_SIZE=10
    DB_MAX_OVERFLOW=20
+   DB_ECHO_QUERIES=true
    ```
 
 10. Voer het volgende commando uit om de Docker image te bouwen & Docker container te bouwen:  

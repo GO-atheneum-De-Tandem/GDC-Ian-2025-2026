@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings
+from sqlalchemy.orm import declarative_base
 from os import getenv
 
 class Settings(BaseSettings):
@@ -10,6 +11,10 @@ class Settings(BaseSettings):
     DB_POOL_SIZE: int = int(getenv("DB_POOL_SIZE", 10))
     DB_MAX_OVERFLOW: int = int(getenv("DB_MAX_OVERFLOW", 20))
     DB_URL: str = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+    DB_ECHO_QUERIES: bool = getenv("DB_ECHO_QUERIES", "true").lower() in ("true", "1", "yes")
     
 settings = Settings()
 # gebruik settings.DB_HOST etc.
+
+#Base class voor models
+Base = declarative_base()
