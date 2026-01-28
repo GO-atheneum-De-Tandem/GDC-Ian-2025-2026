@@ -40,13 +40,15 @@ Je kan hiervoor de volgende network regels toevoegen aan het compose file:
    ```
 
 9. Maak een `data.env` bestand aan in dezelfde directory als het Dockerfile & compose file.  
-Vul hierin de volgende environment variables in met de juiste waarden:
+Vul hierin de volgende environment variables in met de juiste waarden of pas aan waar nodig:
    ```env
    DB_HOST=your_database_host
    DB_PORT=your_database_port
    DB_NAME=your_database_name
    DB_USER=your_database_user
    DB_PASSWORD=your_database_password
+   DB_POOL_SIZE=10
+   DB_MAX_OVERFLOW=20
    ```
 
 10. Voer het volgende commando uit om de Docker image te bouwen & Docker container te bouwen:  
