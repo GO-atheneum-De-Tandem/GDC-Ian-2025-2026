@@ -1,34 +1,18 @@
-from fastapi import FastAPI
-from .config import settings
-import asyncpg
-import logging
+from fastapi import FastAPI, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from app.database import get_db
+import app.models as models
 
 app = FastAPI()
 
-#Database connection pool setup
-@app.on_event("startup")
-async def startup_db():
-    dsn = f"postgresql://{settings.DB_USER}:{settings.DB_PASS}@{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}"
-    try:
-        app.state.db_pool = await asyncpg.create_pool(dsn, min_size=1, max_size=10)
-        logger.info("DB pool created")
-    except Exception as e:
-        logger.critical("DB pool creation failed: %s", e)
-
-#Database connection pool teardown
-@app.on_event("shutdown")
-async def shutdown_db():
-    pool = getattr(app.state, "db_pool", None)
-    if pool:
-        await pool.close()
-        logger.info("DB pool closed")
-
 @app.get("/")
-def first_example():
-   '''
-   FG Example First Fast API Example 
-   '''
-   return {"GFG Example": "FastAPI"}
+async def read_root():
+    return {"message": "Hello, welcome to the Safe API! GDC research project by Ian-Chains Baute."}
+
+@app.get("/users")
+async def get_users(db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(models.User))
+    users = result.scalars().all() #scalars() haalt alle kolommen op, all() zet om in lijst
+    return users
