@@ -3,5 +3,6 @@ pydantic
 pydantic-settings
 pytest
 pylint
+sqlalchemy
 asyncpg
 logging
