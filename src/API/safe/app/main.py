@@ -1,17 +1,29 @@
+# -------- IMPORTS --------
+#api imports
+from app.config import description
 from fastapi import FastAPI, Depends, Request, HTTPException
+
+#database & ORM imports
+from app.database import get_db
+from app.database import AsyncSessionLocal
+import app.models as models
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, or_
 from sqlalchemy.exc import IntegrityError
-from pydantic import BaseModel, EmailStr
-from argon2 import PasswordHasher
 
-#behind proxy middleware
+#pydantic imports
+from pydantic import BaseModel, EmailStr
+
+#logging & authentication imports
+from argon2 import PasswordHasher
+import logging
+
+#proxy middleware import
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
-from app.database import get_db
-import app.models as models
-from app.config import description
+# -------- SETUP & CONFIGURATION --------
 
+#app setup
 app = FastAPI(
     title="Safe API - GDC Ian",
     description=description,
@@ -28,33 +40,59 @@ app = FastAPI(
     },
 )
 
+#logging setup
 app.add_middleware(
     ProxyHeadersMiddleware,
     trusted_hosts="*"
 )
 
+#database connection test on startup
+@app.on_event("startup")
+async def on_startup():
+    logger = logging.getLogger("uvicorn.error")
+
+    #If session factory not configured, log and skip test
+    if AsyncSessionLocal is None:
+        logger.error("AsyncSessionLocal not configured; skipping DB connection test.")
+        return
+
+    try:
+        async with AsyncSessionLocal() as session:
+            await session.execute(select(1)) #simple test query
+        logger.info("Database connection test succeeded.")
+    except Exception as e:
+        logger.exception("Database connection test failed: %s", e)
+
+# -------- ROOT & TESTING ENDPOINTS --------
+
+#root endpoint returning welcome message and client IP
 @app.get("/")
 async def read_root(request: Request):
     return {"message": "Hello, welcome to the Safe API! GDC research project by Ian-Chains Baute.", "client_host": request.client.host}
 
+# -------- USER ENDPOINTS --------
+
+#users get endpoint, lists all users in database
 @app.get("/users")
 async def get_users(db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(models.User))
     users = result.scalars().all() #scalars() haalt alle kolommen op, all() zet om in lijst
     return users
 
+#users get endpoint, haalt specifieke gebruiker op basis van ID
 @app.get("/users/{user_id}")
 async def get_user_by_id(user_id: int, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(models.User).where(models.User.id == user_id))
     user = result.scalars().first() #scalars() haalt alle kolommen op, first() haalt de eerste rij op
     return user
 
-
+#user create expected json body
 class UserCreate(BaseModel):
     username: str
     email: EmailStr
     password: str
 
+#users post endpoint, maakt nieuwe gebruiker aan in database
 @app.post("/users", status_code=201)
 async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
     #basic password & input validation
