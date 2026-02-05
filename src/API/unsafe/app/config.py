@@ -16,5 +16,13 @@ class Settings(BaseSettings):
 settings = Settings()
 # gebruik settings.DB_HOST etc.
 
+description = """
+This is the **Unsafe API** for the GDC research project by Ian-Chains Baute.
+
+This system is based on FastAPI and SQLAlchemy. It has features like posting blogposts, commenting, user authentication, and more.
+This version of the GDC API is unsafe, to show and **demonstrate security vulnerabilities** for educational purposes.
+Please be cautious when using this API in a production environment.
+"""
+
 #Base class voor models
 Base = declarative_base()
