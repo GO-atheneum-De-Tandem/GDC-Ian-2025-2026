@@ -28,7 +28,7 @@ app = FastAPI(
     title="Safe API - GDC Ian",
     description=description,
     summary="A safe API for GDC research project by Ian-Chains Baute.",
-    version="0.1.1",
+    version="0.2.1",
     contact={
         "name": "Ian-Chains Baute",
         "email": "school@ian-chains.it",
