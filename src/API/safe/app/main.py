@@ -170,7 +170,7 @@ async def login(credentials: LoginRequest, db: AsyncSession = Depends(get_db)):
     now = datetime.utcnow()
     exp = now + timedelta(minutes=settings.JWT_EXP_MINUTES)
     payload = {
-        "id": str(user.id),
+        "sub": str(user.id),
         "username": user.username,
         "role": user.role,
         "iat": int(now.timestamp()),
