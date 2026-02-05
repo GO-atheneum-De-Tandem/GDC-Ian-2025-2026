@@ -7,15 +7,17 @@ services:
       dockerfile: Dockerfile
     image: gdc-ian-unsafe-api:latest
     container_name: gdc-ian-unsafe-api
+    networks:
+      - postgres_default
     ports:
-        - "127.0.0.1:80:80" #local allow
-        - "10.66.66.1:80:80" #wireguard allow
-        - "[::1]:80:80" #ipv6 local allow
-        - "[fd42:42:42::1]:80:80" #ipv6 wireguard allow
+        - "80:80"
     env_file:
       - data.env
     restart: unless-stopped
+    # Voor dev: uncomment of comment volumes zodat lokale code direct gebruikt wordt:
+    volumes:
+    - ./app:/code/app
 
-    # Voor dev: uncomment volumes zodat lokale code direct gebruikt wordt:
-    # volumes:
-    #   - ./app:/code/app
+networks:
+  postgres_default:
+    external: true
