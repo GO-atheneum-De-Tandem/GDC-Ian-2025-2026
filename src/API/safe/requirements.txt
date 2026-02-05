@@ -6,3 +6,4 @@ pylint
 sqlalchemy[asyncio]
 asyncpg
 logging
+argon2-cffi
