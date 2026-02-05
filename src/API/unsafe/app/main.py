@@ -1,6 +1,9 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+
+#behind proxy middleware
+from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 from app.database import get_db
 import app.models as models
@@ -22,9 +25,14 @@ app = FastAPI(
     },
 )
 
+app.add_middleware(
+    ProxyHeadersMiddleware,
+    trusted_hosts="*"
+)
+
 @app.get("/")
-async def read_root():
-    return {"message": "Hello, welcome to the Unsafe API! GDC research project by Ian-Chains Baute."}
+async def read_root(request: Request):
+    return {"message": "Hello, welcome to the Unsafe API! GDC research project by Ian-Chains Baute.", "client_host": request.client.host}
 
 @app.get("/users")
 async def get_list_all_users(db: AsyncSession = Depends(get_db)):
