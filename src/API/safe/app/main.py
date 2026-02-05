@@ -1,7 +1,9 @@
 # -------- IMPORTS --------
 #api imports
-from app.config import description
+from app.config import description, settings
 from fastapi import FastAPI, Depends, Request, HTTPException
+from datetime import datetime, timedelta
+import jwt
 
 #database & ORM imports
 from app.database import get_db
@@ -134,3 +136,45 @@ async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
 
     #return new user data
     return {"id": new_user.id, "username": new_user.username, "email": new_user.email, "created_at": new_user.created_at}
+
+# -------- AUTHENTICATION ENDPOINTS --------
+
+# Login request model
+class LoginRequest(BaseModel):
+    username_or_email: str
+    password: str
+
+# Login endpoint that returns a HMAC-signed JWT valid for configured minutes
+@app.post("/login")
+async def login(credentials: LoginRequest, db: AsyncSession = Depends(get_db)):
+    # find user by username or email
+    result = await db.execute(select(models.User).where((models.User.username == credentials.username_or_email) | (models.User.email == credentials.username_or_email)))
+    user = result.scalars().first()
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    #hash input password & verify
+    ph = PasswordHasher()
+    try:
+        ph.verify(user.password_hash, credentials.password)
+    except Exception:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    #create JWT payload
+    now = datetime.utcnow()
+    exp = now + timedelta(minutes=settings.JWT_EXP_MINUTES)
+    payload = {
+        "sub": str(user.id),
+        "username": user.username,
+        "iat": int(now.timestamp()),
+        "exp": int(exp.timestamp()),
+    }
+
+    #generate JWT token
+    try:
+        token = jwt.encode(payload, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
+    except Exception:
+        raise HTTPException(status_code=500, detail="Token generation failed")
+
+    #return token and expiration
+    return {"access_token": token, "token_type": "bearer", "expires_at": exp}

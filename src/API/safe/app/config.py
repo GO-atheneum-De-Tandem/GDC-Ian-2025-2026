@@ -13,6 +13,11 @@ class Settings(BaseSettings):
     DB_URL: str = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     DB_ECHO_QUERIES: bool = getenv("DB_ECHO_QUERIES", "true").lower() in ("true", "1", "yes")
     
+    # JWT settings
+    JWT_SECRET: str = getenv("JWT_SECRET", "change-this-secret")
+    JWT_ALGORITHM: str = getenv("JWT_ALGORITHM", "HS256")
+    JWT_EXP_MINUTES: int = int(getenv("JWT_EXP_MINUTES", 15))
+    
 settings = Settings()
 # gebruik settings.DB_HOST etc.
 

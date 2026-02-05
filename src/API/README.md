@@ -50,15 +50,23 @@ Vul hierin de volgende environment variables in met de juiste waarden of pas aan
    DB_POOL_SIZE=10
    DB_MAX_OVERFLOW=20
    DB_ECHO_QUERIES=true
+
+   JWT_SECRET=your_jwt_secret_key
+   JWT_ALGORITHM=HS256
+   JWT_EXP_MINUTES=15
    ```
 
-10. Voer het volgende commando uit om de Docker image te bouwen & Docker container te bouwen:  
+10. Vervang `your_jwt_secret_key` in het `data.env` bestand met een sterke geheime sleutel voor het ondertekenen van JWT tokens.
+Gebruik het commaand `openssl rand -hex 32` om een veilige sleutel te genereren.
+Deze kan je vervolgens kopiëren en plakken in het `data.env` bestand.
+
+11. Voer het volgende commando uit om de Docker image te bouwen & Docker container te bouwen:  
 Zorg ervoor dat je in de directory bent waar het Dockerfile & compose file zich bevindt.
    ```bash
    docker compose up --build -d
    ```
 
-11. Voor het herbouwen van de container na aanpassingen, voer je het volgende commando uit:
+12. Voor het herbouwen van de container na aanpassingen, voer je het volgende commando uit:
    ```bash
    docker compose build
    ```
