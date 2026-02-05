@@ -19,11 +19,11 @@ settings = Settings()
 description = """
 This is the **Safe API** for the GDC research project by Ian-Chains Baute.
 
-This system is based on FastAPI and SQLAlchemy. It has features like posting blogposts, commenting, user authentication, and more.
-This version of the GDC API is safe, to provide **a secure environment** for educational purposes.
-This version has the extra features and steps implemented to **ensure security**.
-By looking at the differences between the safe and unsafe version, you can learn about **common security vulnerabilities** and how to mitigate them.
-Please use this API responsibly and **always** prioritize security in your applications.
+This system is based on FastAPI and SQLAlchemy. It has features like posting blogposts, commenting, user authentication, and more.  
+This version of the GDC API is safe, to provide **a secure environment** for educational purposes.  
+This version has the extra features and steps implemented to **ensure security**.  
+By looking at the differences between the safe and unsafe version, you can learn about **common security vulnerabilities** and how to mitigate them.  
+Please use this API responsibly and **always** prioritize security in your applications.  
 """
 
 #Base class voor models
