@@ -115,7 +115,13 @@ async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
             raise HTTPException(status_code=409, detail="Email already exists")
 
     #password hashing
-    ph = PasswordHasher()
+    ph = PasswordHasher(
+        time_cost=settings.HASH_TIME_COST,
+        memory_cost=settings.HASH_MEMORY_COST,
+        parallelism=settings.HASH_PARALLELISM,
+        salt_len=settings.HASH_SALT_LENGTH,
+        hash_len=settings.HASH_HASH_LENGTH,
+    )
     try:
         password_hash = ph.hash(user.password)
     except Exception:
