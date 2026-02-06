@@ -1,7 +1,7 @@
 # -------- IMPORTS --------
 #api imports
 from app.config import description, settings
-from fastapi import FastAPI, Depends, Request, HTTPException
+from fastapi import FastAPI, Depends, Request, HTTPException, Response
 from datetime import datetime, timedelta
 
 #database & ORM imports
@@ -146,7 +146,7 @@ class LoginRequest(BaseModel):
     password: str
 
 @app.post("/login")
-async def login(credentials: LoginRequest, db: AsyncSession = Depends(get_db)):
+async def login(credentials: LoginRequest, response: Response, db: AsyncSession = Depends(get_db)):
     """Authenticate user and return JWT token."""
 
     # find user by username or email
@@ -168,6 +168,19 @@ async def login(credentials: LoginRequest, db: AsyncSession = Depends(get_db)):
         token, exp = await create_jwt_token(user.id, user.username, user.role)
     except RuntimeError:
         raise HTTPException(status_code=500, detail="Token generation failed")
+    
+    #create secure cookie with token
+    try:
+        response.set_cookie(
+            key="access_token",
+            value=token,
+            httponly=True,
+            secure=True,
+            samesite="Strict",
+            max_age=settings.JWT_EXP_MINUTES * 60
+        )
+    except Exception:
+        raise HTTPException(status_code=500, detail="Failed to set authentication cookie")
 
     #return token and expiration time
-    return {"access_token": token, "token_type": "bearer", "expires_at": exp}
+    return {"access_token": token, "token_type": "bearer", "expires_at": exp, "user": {"id": user.id, "username": user.username, "email": user.email}}
