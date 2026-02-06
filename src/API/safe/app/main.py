@@ -3,7 +3,6 @@
 from app.config import description, settings
 from fastapi import FastAPI, Depends, Request, HTTPException
 from datetime import datetime, timedelta
-import jwt
 
 #database & ORM imports
 from app.database import get_db
@@ -17,7 +16,7 @@ from sqlalchemy.exc import IntegrityError
 from pydantic import BaseModel, EmailStr
 
 #logging & authentication imports
-from argon2 import PasswordHasher
+from app.functions import create_password_hash, verify_password, create_jwt_token
 import logging
 
 #proxy middleware import
@@ -67,36 +66,39 @@ async def on_startup():
 
 # -------- ROOT & TESTING ENDPOINTS --------
 
-#root endpoint returning welcome message and client IP
 @app.get("/")
 async def read_root(request: Request):
+    """Root endpoint returning a welcome message and client IP address."""
     return {"message": "Hello, welcome to the Safe API! GDC research project by Ian-Chains Baute.", "client_host": request.client.host}
 
 # -------- USER ENDPOINTS --------
 
-#users get endpoint, lists all users in database
 @app.get("/users")
 async def get_users(db: AsyncSession = Depends(get_db)):
+    """Retrieve all users and their information from the database."""
+    
     result = await db.execute(select(models.User))
     users = result.scalars().all() #scalars() haalt alle kolommen op, all() zet om in lijst
     return users
 
-#users get endpoint, haalt specifieke gebruiker op basis van ID
 @app.get("/users/{user_id}")
 async def get_user_by_id(user_id: int, db: AsyncSession = Depends(get_db)):
+    """Retrieve a user by their ID from the database."""
+
     result = await db.execute(select(models.User).where(models.User.id == user_id))
     user = result.scalars().first() #scalars() haalt alle kolommen op, first() haalt de eerste rij op
     return user
 
-#user create expected json body
 class UserCreate(BaseModel):
+    """Model for creating a new user."""
     username: str
     email: EmailStr
     password: str
 
-#users post endpoint, maakt nieuwe gebruiker aan in database
 @app.post("/users", status_code=201)
 async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
+    """Create a new user in the database with hashed password."""
+
     #basic password & input validation
     if not user.password or len(user.password) < 8:
         raise HTTPException(status_code=422, detail="Password must be at least 8 characters long")
@@ -115,16 +117,9 @@ async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
             raise HTTPException(status_code=409, detail="Email already exists")
 
     #password hashing
-    ph = PasswordHasher(
-        time_cost=settings.HASH_TIME_COST,
-        memory_cost=settings.HASH_MEMORY_COST,
-        parallelism=settings.HASH_PARALLELISM,
-        salt_len=settings.HASH_SALT_LENGTH,
-        hash_len=settings.HASH_HASH_LENGTH,
-    )
     try:
-        password_hash = ph.hash(user.password)
-    except Exception:
+        password_hash = await create_password_hash(user.password)
+    except RuntimeError:
         raise HTTPException(status_code=500, detail="Password hashing failed")
 
     #create user in database
@@ -145,43 +140,34 @@ async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
 
 # -------- AUTHENTICATION ENDPOINTS --------
 
-# Login request model
 class LoginRequest(BaseModel):
+    """Model for login request."""
     username_or_email: str
     password: str
 
-# Login endpoint that returns a HMAC-signed JWT valid for configured minutes
 @app.post("/login")
 async def login(credentials: LoginRequest, db: AsyncSession = Depends(get_db)):
+    """Authenticate user and return JWT token."""
+
     # find user by username or email
     result = await db.execute(select(models.User).where((models.User.username == credentials.username_or_email) | (models.User.email == credentials.username_or_email)))
     user = result.scalars().first()
     if not user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    #hash input password & verify
-    ph = PasswordHasher()
+    #verify password using helper
     try:
-        ph.verify(user.password_hash, credentials.password)
-    except Exception:
+        verified = await verify_password(user.password_hash, credentials.password)
+    except RuntimeError:
+        raise HTTPException(status_code=500, detail="Password verification failed")
+    if not verified:
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    #create JWT payload
-    now = datetime.utcnow()
-    exp = now + timedelta(minutes=settings.JWT_EXP_MINUTES)
-    payload = {
-        "sub": str(user.id),
-        "username": user.username,
-        "role": user.role,
-        "iat": int(now.timestamp()),
-        "exp": int(exp.timestamp()),
-    }
-
-    #generate JWT token
+    #generate JWT token using helper
     try:
-        token = jwt.encode(payload, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
-    except Exception:
+        token, exp = await create_jwt_token(user.id, user.username, user.role)
+    except RuntimeError:
         raise HTTPException(status_code=500, detail="Token generation failed")
 
-    #return token and expiration
+    #return token and expiration time
     return {"access_token": token, "token_type": "bearer", "expires_at": exp}
