@@ -183,4 +183,4 @@ async def login(credentials: LoginRequest, response: Response, db: AsyncSession 
         raise HTTPException(status_code=500, detail="Failed to set authentication cookie")
 
     #return token and expiration time
-    return {"access_token": token, "token_type": "bearer", "expires_at": exp, "user": {"id": user.id, "username": user.username, "email": user.email}}
+    return {"id": user.id, "username": user.username, "email": user.email}
